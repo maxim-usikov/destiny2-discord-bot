@@ -1,9 +1,13 @@
 {
   "name": "discord-bot",
   "version": "0.0.0",
-  "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "start": "nodemon src/index.js --exec babel-node",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js"
+  },
   "dependencies": {
     "discord.js": "^11.4.2",
     "dotenv": "^6.1.0"
