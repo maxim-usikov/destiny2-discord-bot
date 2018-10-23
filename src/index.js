@@ -4,6 +4,7 @@ import Ping from './commands/ping';
 import ArgsInfo from './commands/args-info';
 import Yes from './commands/yes';
 import No from './commands/no';
+import Slap from './commands/slap';
 
 const { DISCORD_BOT_TOKEN, DISCORD_COMMAND_PREFIX } = process.env;
 const client = new Discord.Client();
@@ -13,6 +14,7 @@ client.commands.set(Ping.name, Ping);
 client.commands.set(ArgsInfo.name, ArgsInfo);
 client.commands.set(Yes.name, Yes);
 client.commands.set(No.name, No);
+client.commands.set(Slap.name, Slap);
 
 client.on('ready', () => {
   console.log('Bot is READY!');
