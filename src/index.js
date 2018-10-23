@@ -21,7 +21,7 @@ client.on('ready', () => {
   client.user.setActivity('Destiny 2: Forsaken', { type: 'PLAYING' });
 });
 
-client.on('message', message => {
+function yesNo(message) {
   if (message.content.trim().toLowerCase() === 'да') {
     const command = client.commands.get('yes');
     if (command) {
@@ -35,20 +35,23 @@ client.on('message', message => {
       command.execute(message, []);
     }
   }
+}
 
-  if (!message.content.startsWith(DISCORD_COMMAND_PREFIX) || message.author.bot)
-    return;
+function isCommand(message) {
+  return (
+    message.content.startsWith(DISCORD_COMMAND_PREFIX) && !message.author.bot
+  );
+}
 
-  const args = message.content.slice(DISCORD_COMMAND_PREFIX.length).split(/ +/);
-  const commandName = args.shift().toLowerCase();
+function hasCommand(name) {
+  return client.commands.has(name);
+}
 
-  if (!client.commands.has(commandName)) return;
-
-  const command =
-    client.commands.get(commandName) ||
-    client.commands.find(
-      cmd => cmd.aliases && cmd.aliases.includes(commandName)
-    );
+function canExecute(message, command, args) {
+  if (command.guildOnly && message.channel.type !== 'text') {
+    message.reply('I cant execute that command inside DMs!');
+    return false;
+  }
 
   if (command.args && !args.length) {
     let reply = `You didn't provide any arguments, ${message.author}!`;
@@ -59,14 +62,38 @@ client.on('message', message => {
     }
 
     message.channel.send(reply);
-    return;
+    return false;
   }
 
-  try {
-    command.execute(message, args);
-  } catch (error) {
-    console.error(error);
-    message.reply('there was an error trying to execute that command!');
+  return true;
+}
+
+client.on('message', message => {
+  // TODO: refactor yesNo reaction
+  yesNo(message);
+
+  if (isCommand(message)) {
+    const args = message.content
+      .slice(DISCORD_COMMAND_PREFIX.length)
+      .split(/ +/);
+    const commandName = args.shift().toLowerCase();
+
+    if (hasCommand(commandName)) {
+      const command =
+        client.commands.get(commandName) ||
+        client.commands.find(
+          cmd => cmd.aliases && cmd.aliases.includes(commandName)
+        );
+
+      if (canExecute(message, command, args)) {
+        try {
+          command.execute(message, args);
+        } catch (error) {
+          console.error(error);
+          message.reply('there was an error trying to execute that command!');
+        }
+      }
+    }
   }
 });
 
