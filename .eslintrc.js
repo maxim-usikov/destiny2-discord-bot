@@ -4,9 +4,9 @@ module.exports = {
     node: true
   },
 
-  extends: ['airbnb-base', 'plugin:prettier/recommended'],
+  extends: ['airbnb-base', 'prettier'],
 
-  // plugins: ['prettier'],
+  plugins: ['prettier'],
 
   parserOptions: {
     parser: 'babel-eslint',
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   rules: {
-    // 'prettier/prettier': 'warn',
+    'prettier/prettier': 'warn',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     quotes: ['error', 'single'],
